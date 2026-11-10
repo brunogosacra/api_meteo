@@ -1,0 +1,263 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="Consulte a previsão do tempo de cidades do mundo todo."
+    />
+    <meta name="theme-color" content="#f6efe5" />
+    <title>Sol &amp; Lua — previsão do tempo</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="styles.css" />
+    <script src="script.js" defer></script>
+  </head>
+  <body>
+    <main class="page-shell">
+      <header class="topbar">
+        <a class="brand" href="#" aria-label="Sol e Lua, início">
+          <span class="brand-mark" aria-hidden="true">☼</span>
+          <span>sol<span class="brand-amp">&amp;</span>lua</span>
+        </a>
+        <div class="topbar-actions">
+          <span class="topbar-note">O clima da sua cidade, em um só lugar</span>
+          <button
+            class="theme-toggle"
+            id="theme-toggle"
+            type="button"
+            aria-label="Ativar modo noturno"
+            aria-pressed="false"
+            title="Ativar modo noturno"
+          >
+            <svg class="theme-icon theme-icon-moon" aria-hidden="true" viewBox="0 0 24 24" fill="none">
+              <path d="M20.2 15.4A8.4 8.4 0 0 1 8.6 3.8 8.5 8.5 0 1 0 20.2 15.4Z" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" />
+            </svg>
+            <svg class="theme-icon theme-icon-sun" aria-hidden="true" viewBox="0 0 24 24" fill="none">
+              <circle cx="12" cy="12" r="4" stroke="currentColor" stroke-width="1.8" />
+              <path d="M12 2v2m0 16v2M4.93 4.93l1.42 1.42m11.3 11.3 1.42 1.42M2 12h2m16 0h2M4.93 19.07l1.42-1.42m11.3-11.3 1.42-1.42" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />
+            </svg>
+            <span class="theme-toggle-label">Modo noturno</span>
+          </button>
+        </div>
+      </header>
+
+      <section class="hero" aria-labelledby="page-title">
+        <div class="hero-copy">
+          <span class="eyebrow"><span class="eyebrow-dot"></span> PREVISÃO DO TEMPO</span>
+          <h1 id="page-title">O clima da sua cidade,<br /><span>em tempo real.</span></h1>
+          <p>Descubra como está o tempo agora e prepare-se para os próximos dias.</p>
+
+          <div class="city-search">
+            <form class="search-form" id="search-form" role="search">
+              <label class="sr-only" for="city-input">Nome da cidade</label>
+              <svg
+                class="search-icon"
+                aria-hidden="true"
+                viewBox="0 0 24 24"
+                fill="none"
+              >
+                <circle cx="10.8" cy="10.8" r="6.8" stroke="currentColor" stroke-width="1.8" />
+                <path d="m16 16 4.2 4.2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />
+              </svg>
+              <input
+                id="city-input"
+                name="city"
+                type="search"
+                placeholder="Digite o nome de uma cidade"
+                autocomplete="off"
+                role="combobox"
+                aria-autocomplete="list"
+                aria-expanded="false"
+                aria-controls="city-suggestions"
+                required
+              />
+              <button id="search-button" type="submit">
+                <span>Buscar</span>
+                <span class="button-arrow" aria-hidden="true">→</span>
+              </button>
+            </form>
+            <div class="suggestions-panel" id="suggestions-panel" hidden>
+              <ul
+                class="city-suggestions"
+                id="city-suggestions"
+                role="listbox"
+                aria-label="Cidades encontradas"
+              ></ul>
+              <p class="suggestions-message" id="suggestions-message" role="status"></p>
+            </div>
+          </div>
+          <p class="search-hint">Experimente: São Paulo, Lisboa ou Tóquio</p>
+        </div>
+
+        <div class="celestial-art" aria-hidden="true">
+          <div class="orbit orbit-one"></div>
+          <div class="orbit orbit-two"></div>
+          <span class="star star-one">✦</span>
+          <span class="star star-two">✧</span>
+          <span class="star star-three">·</span>
+          <div class="sun-glow">
+            <div class="sun-disc"></div>
+          </div>
+          <div class="moon-glow">
+            <div class="moon-disc">
+              <span class="moon-crater moon-crater-one"></span>
+              <span class="moon-crater moon-crater-two"></span>
+              <span class="moon-crater moon-crater-three"></span>
+            </div>
+          </div>
+          <span class="art-caption art-caption-sun">A luz do sol</span>
+          <span class="art-caption art-caption-moon">A luz da lua</span>
+        </div>
+      </section>
+
+      <p class="status-message" id="status-message" role="status" aria-live="polite">
+        <span class="status-spinner" aria-hidden="true"></span>
+        <span id="status-text"></span>
+      </p>
+
+      <section class="weather-section" id="weather-section" hidden aria-live="polite">
+        <div class="section-heading">
+          <div>
+            <span class="section-kicker">AGORA</span>
+            <h2>O tempo por aí</h2>
+          </div>
+          <span class="updated-at" id="updated-at"></span>
+        </div>
+
+        <article class="current-card">
+          <div class="current-main">
+            <div class="place">
+              <svg aria-hidden="true" viewBox="0 0 24 24" fill="none">
+                <path d="M19 10.1c0 5-7 11-7 11s-7-6-7-11a7 7 0 1 1 14 0Z" stroke="currentColor" stroke-width="1.7" />
+                <circle cx="12" cy="10" r="2.3" stroke="currentColor" stroke-width="1.7" />
+              </svg>
+              <div>
+                <h3 id="city-name"></h3>
+                <p id="city-region"></p>
+              </div>
+            </div>
+            <div class="temperature-row">
+              <span class="weather-icon" id="weather-icon" aria-hidden="true"></span>
+              <div class="temperature" id="temperature"></div>
+            </div>
+            <p class="condition" id="condition"></p>
+          </div>
+
+          <div class="current-details">
+            <div class="detail-item">
+              <span class="detail-icon" aria-hidden="true">◉</span>
+              <div><span class="detail-label">Sensação térmica</span><strong id="feels-like"></strong></div>
+            </div>
+            <div class="detail-item">
+              <span class="detail-icon" aria-hidden="true">〰</span>
+              <div><span class="detail-label">Umidade do ar</span><strong id="humidity"></strong></div>
+            </div>
+            <div class="detail-item">
+              <span class="detail-icon" aria-hidden="true">↗</span>
+              <div><span class="detail-label">Vento</span><strong id="wind"></strong></div>
+            </div>
+            <div class="detail-item">
+              <span class="detail-icon" aria-hidden="true">☂</span>
+              <div><span class="detail-label">Chuva agora</span><strong id="precipitation"></strong></div>
+            </div>
+          </div>
+        </article>
+
+        <div class="forecast-heading">
+          <div>
+            <span class="section-kicker">PLANEJE-SE</span>
+            <h2>Próximos dias</h2>
+          </div>
+          <span class="forecast-note">Previsão para 5 dias</span>
+        </div>
+        <div class="forecast-grid" id="forecast-grid"></div>
+
+        <section class="chart-card" aria-labelledby="chart-title">
+          <div class="chart-heading">
+            <div>
+              <span class="section-kicker">DADOS DA PREVISÃO</span>
+              <h2 id="chart-title">Variação da temperatura</h2>
+            </div>
+            <div class="chart-controls" role="group" aria-label="Indicador do gráfico">
+              <button class="chart-tab is-active" type="button" data-chart-metric="temperature" aria-pressed="true">Temperatura</button>
+              <button class="chart-tab" type="button" data-chart-metric="humidity" aria-pressed="false">Umidade</button>
+              <button class="chart-tab" type="button" data-chart-metric="wind" aria-pressed="false">Vento</button>
+              <button class="chart-tab" type="button" data-chart-metric="rain" aria-pressed="false">Chuva</button>
+            </div>
+          </div>
+          <div class="chart-legend" id="chart-legend"></div>
+          <div class="weather-chart-wrap">
+            <svg
+              class="weather-chart"
+              id="weather-chart"
+              viewBox="0 0 760 280"
+              role="img"
+              aria-labelledby="chart-svg-title chart-svg-description"
+              preserveAspectRatio="xMidYMid meet"
+            >
+              <title id="chart-svg-title">Gráfico da previsão do tempo</title>
+              <desc id="chart-svg-description"></desc>
+            </svg>
+          </div>
+        </section>
+      </section>
+
+      <section class="activity-section" id="activity-section" hidden aria-label="Histórico e comparação de cidades">
+        <div class="activity-card">
+          <div class="activity-heading">
+            <div>
+              <span class="section-kicker">SEU HISTÓRICO</span>
+              <h2>Últimas consultas</h2>
+            </div>
+            <span class="activity-caption">Suas cidades recentes</span>
+          </div>
+          <div class="recent-cities" id="recent-cities"></div>
+        </div>
+
+        <div class="activity-card comparison-card">
+          <div class="activity-heading">
+            <div>
+              <span class="section-kicker">LADO A LADO</span>
+              <h2>Comparar cidades</h2>
+            </div>
+            <span class="activity-caption">Escolha duas cidades do histórico</span>
+          </div>
+          <form class="comparison-form" id="comparison-form">
+            <label class="comparison-field">
+              <span>Primeira cidade</span>
+              <select id="comparison-city-one" required></select>
+            </label>
+            <span class="comparison-versus" aria-hidden="true">×</span>
+            <label class="comparison-field">
+              <span>Segunda cidade</span>
+              <select id="comparison-city-two" required></select>
+            </label>
+            <button class="compare-button" id="compare-button" type="submit">Comparar</button>
+          </form>
+          <p class="comparison-status" id="comparison-status" role="status" aria-live="polite"></p>
+          <div class="comparison-results" id="comparison-results" aria-live="polite"></div>
+        </div>
+      </section>
+
+      <section class="welcome-card" id="welcome-card" aria-label="Como consultar">
+        <span class="welcome-icon" aria-hidden="true">☀</span>
+        <div>
+          <h2>Como está o céu na sua cidade?</h2>
+          <p>Pesquise uma cidade acima para ver a temperatura e a previsão dos próximos dias.</p>
+        </div>
+        <span class="welcome-moon" aria-hidden="true">☾</span>
+      </section>
+
+      <footer class="footer">
+        <span>Feito para acompanhar cada mudança do tempo.</span>
+        <span>Dados meteorológicos por <a href="https://open-meteo.com/" target="_blank" rel="noreferrer">Open-Meteo</a></span>
+      </footer>
+    </main>
+  </body>
+</html>
